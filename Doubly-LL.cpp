@@ -249,19 +249,81 @@ int detectCycle(Node* head){
     }
     return false;
 }
+bool isPalindromeBrute(Node* head){
+    Node* mover = head;
+    stack<int> st;
+    while (mover != NULL ){
+        st.push(mover->data);
+        mover = mover->next;
+    }
+    mover = head;
+    while(mover != NULL && mover->next != NULL){
+        if (mover->data != st.top()){
+            cout << "not palindrome" << endl;
+            return false;
+        } 
+        st.pop();
+        mover = mover->next;
+    }
+    return true;
+}
+
+bool isPalindromeOptimal(Node* head){
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast->next != NULL && fast->next->next != NULL){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    Node* newHead = reverseDllOptimal(slow->next);
+
+    Node* first = head;
+    Node* second = newHead;
+
+    int count = 0;
+
+    while(second != NULL){
+        if(first->data != second->data){
+            reverseDllOptimal(newHead);
+            return false;
+        }
+        first = first->next;
+        second = second->next;
+    }
+    reverseDllOptimal(newHead);
+    return true;
+}
+
+// rev = 1 -> 2
+// fast = 1 -> 2 -> 3
+// 1== 1
+// 2==1
+
 
 int main() {
 
     vector<int> arr;
 
-    arr.push_back(23);
-    arr.push_back(12);
-    arr.push_back(45);
-    arr.push_back(34);
-    arr.push_back(89);
-    arr.push_back(32);
-    arr.push_back(76);
-    arr.push_back(21);
+    arr.push_back(1);
+    arr.push_back(2);
+    arr.push_back(3);
+    arr.push_back(3);
+    arr.push_back(2);
+    arr.push_back(1);
+
+    // arr.push_back(23);
+    // arr.push_back(12);
+    // arr.push_back(45);
+    // arr.push_back(34);
+    // arr.push_back(89);
+    // arr.push_back(32);
+    // arr.push_back(76);
+    // arr.push_back(21);
 
     Node* head = array2DoublyLinkedList(arr);
 
@@ -279,7 +341,11 @@ int main() {
     // cout << "Kth Node: ", printLL(temp);
 
     // cout << "Middle Node: ", middleNode(temp);
-    middleNodeWithTortoise(temp);
+    // middleNodeWithTortoise(temp);
+
+    // cout << isPalindromeBrute(head);
+
+    cout << isPalindromeOptimal(head);
 
     return 0;
 }
